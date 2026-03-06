@@ -19,42 +19,61 @@ A comprehensive expense tracking application built with FastAPI, SQLAlchemy, and
 ```
 expense-tracker/
 │
-├── app/
-│   ├── main.py                 # FastAPI application entry point
+├── app/                                # Backend API
+│   ├── main.py                         # FastAPI application entry point
 │   │
 │   ├── core/
-│   │   ├── config.py          # Configuration settings
-│   │   ├── security.py        # Password & JWT utilities
-│   │   └── database.py        # Database connection & session
+│   │   ├── config.py                  # Configuration settings
+│   │   ├── security.py                # Password & JWT utilities
+│   │   └── database.py                # Database connection & session
 │   │
 │   ├── models/
-│   │   ├── user_model.py      # User SQLAlchemy model
-│   │   └── expense_model.py   # Expense SQLAlchemy model
+│   │   ├── user_model.py              # User SQLAlchemy model
+│   │   └── expense_model.py           # Expense SQLAlchemy model
 │   │
 │   ├── schemas/
-│   │   ├── user_schema.py     # User Pydantic schemas
-│   │   └── expense_schema.py  # Expense Pydantic schemas
+│   │   ├── user_schema.py             # User Pydantic schemas
+│   │   └── expense_schema.py          # Expense Pydantic schemas
 │   │
 │   ├── repositories/
-│   │   ├── user_repository.py    # User database operations
-│   │   └── expense_repository.py # Expense database operations
+│   │   ├── user_repository.py         # User database operations
+│   │   └── expense_repository.py      # Expense database operations
 │   │
 │   ├── services/
-│   │   ├── auth_service.py       # Authentication business logic
-│   │   └── expense_service.py    # Expense business logic
+│   │   ├── auth_service.py            # Authentication business logic
+│   │   └── expense_service.py         # Expense business logic
 │   │
 │   ├── api/
-│   │   ├── deps.py               # Dependency injection
+│   │   ├── deps.py                    # Dependency injection
 │   │   └── routes/
-│   │       ├── auth_routes.py      # Authentication endpoints
-│   │       └── expense_routes.py   # Expense endpoints
+│   │       ├── auth_routes.py         # Authentication endpoints
+│   │       └── expense_routes.py      # Expense endpoints
 │   │
 │   └── utils/
-│       └── jwt_handler.py  # JWT utilities
+│       └── jwt_handler.py             # JWT utilities
 │
-├── requirements.txt        # Project dependencies
-├── .env                   # Environment variables
-└── database.db           # SQLite database (auto-created)
+├── frontend/                           # Frontend UI
+│   ├── index.html                      # Landing page
+│   ├── README.md                       # Frontend documentation
+│   │
+│   ├── pages/
+│   │   ├── login.html                 # User login page
+│   │   ├── register.html              # User registration page
+│   │   └── dashboard.html             # Main dashboard
+│   │
+│   ├── styles/
+│   │   ├── main.css                   # Core styles
+│   │   └── dashboard.css              # Dashboard styles
+│   │
+│   └── scripts/
+│       ├── auth.js                    # Authentication logic
+│       └── dashboard.js               # Dashboard functionality
+│
+├── requirements.txt                   # Python dependencies
+├── .env                              # Environment variables
+├── .gitignore                        # Git ignore rules
+├── README.md                         # Main documentation
+└── database.db                       # SQLite database (auto-created)
 ```
 
 ## Setup Instructions
@@ -99,6 +118,94 @@ python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 The API will be available at: `http://localhost:8000`
+
+## Frontend Setup
+
+The frontend is located in the `frontend/` directory and uses vanilla HTML, CSS, and JavaScript.
+
+### 1. Run a Local Web Server
+
+You can serve the frontend using any local web server:
+
+**Python 3:**
+```bash
+cd frontend
+python -m http.server 8080
+```
+
+**Python 2:**
+```bash
+python -m SimpleHTTPServer 8080
+```
+
+**Node.js (http-server):**
+```bash
+npm install -g http-server
+cd frontend
+http-server
+```
+
+**PHP:**
+```bash
+cd frontend
+php -S localhost:8080
+```
+
+### 2. Open in Browser
+
+Navigate to one of these URLs in your browser:
+- `http://localhost:8080/index.html` (Landing page)
+- `http://localhost:8080/pages/login.html` (Login page)
+- `http://localhost:8080/pages/register.html` (Register page)
+
+### 3. Backend Connection
+
+The frontend is configured to connect to the backend API at `http://localhost:8000`.
+
+If your backend is running on a different host/port, update the `API_URL` variable in:
+- `frontend/scripts/auth.js`
+- `frontend/scripts/dashboard.js`
+
+```javascript
+const API_URL = 'http://your-backend-host:port/api/v1';
+```
+
+## Frontend Features
+
+### Pages
+
+1. **Landing Page** (`frontend/index.html`)
+   - Welcome screen with login and register navigation
+
+2. **Login Page** (`frontend/pages/login.html`)
+   - User authentication with email and password
+   - JWT token storage
+   - Form validation
+
+3. **Register Page** (`frontend/pages/register.html`)
+   - New user account creation
+   - Password confirmation
+   - Form validation
+
+4. **Dashboard** (`frontend/pages/dashboard.html`)
+   - View all expenses
+   - Add new expenses
+   - Delete expenses
+   - Filter by category
+   - Summary statistics
+   - Responsive sidebar navigation
+
+### Styling
+
+- **Responsive Design**: Works on all screen sizes (mobile, tablet, desktop)
+- **Modern UI**: Clean card-based layout with gradients
+- **Accessibility**: Semantic HTML and proper form labels
+- **Color Scheme**: Indigo/purple primary colors with utility colors
+
+### JavaScript Modules
+
+- **auth.js**: Authentication functions (login, register, token management)
+- **dashboard.js**: Dashboard functionality (load expenses, add/delete, filtering)
 
 ## API Documentation
 
