@@ -1,0 +1,79 @@
+"""
+FastAPI application entry point.
+Main application factory and route registration.
+"""
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.core.database import init_db
+from app.core.config import settings
+from app.api.routes import auth_routes, expense_routes
+
+# Create FastAPI application
+app = FastAPI(
+    title=settings.APP_NAME,
+    description="Track and manage your expenses efficiently",
+    version="1.0.0"
+)
+
+# CORS middleware configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, specify allowed origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# Event handlers
+@app.on_event("startup")
+def startup_event():
+    """
+    Initialize database on application startup.
+    """
+    init_db()
+    print("Database initialized")
+
+
+# Route registration
+app.include_router(
+    auth_routes.router,
+    prefix=settings.API_V1_STR
+)
+app.include_router(
+    expense_routes.router,
+    prefix=settings.API_V1_STR
+)
+
+
+# Health check endpoint
+@app.get("/health", tags=["health"])
+def health_check():
+    """
+    Health check endpoint.
+    """
+    return {"status": "healthy"}
+
+
+@app.get("/", tags=["root"])
+def root():
+    """
+    Root endpoint with API information.
+    """
+    return {
+        "message": "Welcome to Expense Tracker API",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "openapi": "/openapi.json"
+    }
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "app.main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=settings.DEBUG
+    )
