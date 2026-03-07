@@ -6,6 +6,7 @@
     <title>Expense Tracker - Dashboard</title>
     <link rel="stylesheet" href="../styles/main.css">
     <link rel="stylesheet" href="../styles/dashboard.css">
+    <link rel="stylesheet" href="../styles/dark-mode.css">
 </head>
 <body>
     <div class="dashboard-container">
@@ -26,7 +27,12 @@
             <ul class="nav-menu">
                 <li><a href="#" class="nav-link active" data-section="expenses">📊 Dashboard</a></li>
                 <li><a href="#" class="nav-link" data-section="add-expense">➕ Add Expense</a></li>
+                <li><a href="#" class="nav-link" data-section="insights">📈 Insights</a></li>
             </ul>
+
+            <button class="btn btn-secondary theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <span class="toggle-icon">🌙</span>
+            </button>
 
             <button id="logoutBtn" class="btn btn-danger btn-block">Logout</button>
         </nav>
@@ -69,15 +75,30 @@
 
                 <!-- Filter Section -->
                 <div class="filter-section">
-                    <h3>Filter Expenses</h3>
+                    <h3>Filter & Sort Expenses</h3>
                     <div class="filter-controls">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Search by title..."
+                            class="filter-input"
+                        >
                         <input 
                             type="text" 
                             id="categoryFilter" 
                             placeholder="Filter by category..."
                             class="filter-input"
                         >
+                        <select id="sortBy" class="filter-input">
+                            <option value="date-desc">Newest First</option>
+                            <option value="date-asc">Oldest First</option>
+                            <option value="amount-desc">Highest Amount</option>
+                            <option value="amount-asc">Lowest Amount</option>
+                            <option value="title">Title (A-Z)</option>
+                            <option value="category">Category</option>
+                        </select>
                         <button class="btn btn-secondary" id="resetFilterBtn">Reset</button>
+                        <button class="btn btn-primary" id="exportBtn">📥 Export CSV</button>
                     </div>
                 </div>
 
@@ -162,10 +183,44 @@
                     <div id="expenseMessage" class="message"></div>
                 </form>
             </section>
+
+            <!-- Insights Section -->
+            <section id="insights" class="content-section">
+                <div class="dashboard-header">
+                    <h1>Expense Insights</h1>
+                    <p class="subtitle">Visualize your spending patterns</p>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Spending by Category</h3>
+                        <canvas id="categoryChart" height="150"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Monthly Spending Trend</h3>
+                        <canvas id="monthlyChart" height="150"></canvas>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h3>Generate Reports</h3>
+                    <div class="report-actions">
+                        <button class="btn btn-primary" id="printBtn">🖨️ Print Expenses</button>
+                        <button class="btn btn-primary" id="exportReportBtn">📊 Export Report</button>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Scripts -->
+    <script src="../scripts/dark-mode-toggle.js"></script>
     <script src="../scripts/auth.js"></script>
+    <script src="../scripts/advanced-features.js"></script>
     <script src="../scripts/dashboard.js"></script>
 </body>
 </html>

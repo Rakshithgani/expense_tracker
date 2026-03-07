@@ -31,9 +31,16 @@ async function loadExpenses() {
             return;
         }
         
-        const expenses = await response.json();
-        displayExpenses(expenses);
-        updateSummaryCards(expenses);
+        allExpenses = await response.json();
+        displayExpenses(allExpenses);
+        updateSummaryCards(allExpenses);
+        
+        // Initialize charts if in insights section
+        if (document.getElementById('insights').classList.contains('active')) {
+            setTimeout(() => {
+                initializeCharts(allExpenses);
+            }, 100);
+        }
     } catch (error) {
         console.error('Error loading expenses:', error);
         showMessage('expenseMessage', 'Error loading expenses', 'error');
@@ -239,8 +246,10 @@ function switchSection(e, sectionId) {
 }
 
 /**
- * Filter expenses by category
+ * Filter and sort expenses with advanced options
  */
+let allExpenses = [];
+
 function filterExpensesByCategory() {
     const filterInput = document.getElementById('categoryFilter');
     const category = filterInput.value.trim().toLowerCase();
@@ -259,6 +268,26 @@ function filterExpensesByCategory() {
             item.style.display = 'none';
         }
     });
+}
+
+/**
+ * Apply advanced filtering and sorting
+ */
+function applyAdvancedFilter() {
+    if (allExpenses.length === 0) return;
+    
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const sortBy = document.getElementById('sortBy');
+    
+    const filters = {
+        search: searchInput ? searchInput.value : '',
+        category: categoryFilter ? categoryFilter.value : '',
+        sortBy: sortBy ? sortBy.value : 'date-desc'
+    };
+    
+    let filtered = filterExpensesAdvanced(allExpenses, filters);
+    displayExpenses(filtered);
 }
 
 /**
@@ -304,21 +333,68 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const sectionId = link.getAttribute('data-section');
             switchSection(null, sectionId);
+            
+            // Initialize charts when switching to insights
+            if (sectionId === 'insights' && allExpenses.length > 0) {
+                setTimeout(() => {
+                    initializeCharts(allExpenses);
+                }, 100);
+            }
         });
     });
     
     // Filter functionality
     const categoryFilter = document.getElementById('categoryFilter');
     if (categoryFilter) {
-        categoryFilter.addEventListener('input', filterExpensesByCategory);
+        categoryFilter.addEventListener('input', applyAdvancedFilter);
+    }
+    
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', applyAdvancedFilter);
+    }
+    
+    const sortBy = document.getElementById('sortBy');
+    if (sortBy) {
+        sortBy.addEventListener('change', applyAdvancedFilter);
     }
     
     const resetFilterBtn = document.getElementById('resetFilterBtn');
     if (resetFilterBtn) {
         resetFilterBtn.addEventListener('click', () => {
-            document.getElementById('categoryFilter').value = '';
+            if (searchInput) searchInput.value = '';
+            if (categoryFilter) categoryFilter.value = '';
+            if (sortBy) sortBy.value = 'date-desc';
             loadExpenses();
         });
+    }
+    
+    // Export and report buttons
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', () => {
+            exportToCSV(allExpenses);
+        });
+    }
+    
+    const exportReportBtn = document.getElementById('exportReportBtn');
+    if (exportReportBtn) {
+        exportReportBtn.addEventListener('click', () => {
+            exportToCSV(allExpenses);
+        });
+    }
+    
+    const printBtn = document.getElementById('printBtn');
+    if (printBtn) {
+        printBtn.addEventListener('click', () => {
+            printExpenses(allExpenses);
+        });
+    }
+    
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleDarkMode);
     }
     
     // Set default date to today
