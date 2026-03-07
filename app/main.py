@@ -5,9 +5,11 @@ Main application factory and route registration.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.database import init_db
+from app.core.database import init_db, SessionLocal
 from app.core.config import settings
 from app.api.routes import auth_routes, expense_routes
+from app.repositories.user_repository import get_user_by_email
+from app.services.auth_service import register_user
 
 # Create FastAPI application
 app = FastAPI(
@@ -30,10 +32,32 @@ app.add_middleware(
 @app.on_event("startup")
 def startup_event():
     """
-    Initialize database on application startup.
+    Initialize database on application startup and create demo account.
     """
     init_db()
     print("Database initialized")
+    
+    # Create demo account if it doesn't exist
+    db = SessionLocal()
+    try:
+        demo_email = "demo@example.com"
+        demo_user = get_user_by_email(db, demo_email)
+        
+        if not demo_user:
+            # Create demo account
+            register_user(
+                db,
+                email=demo_email,
+                username="demo",
+                password="demo123"
+            )
+            print("✓ Demo account created: demo@example.com / demo123")
+        else:
+            print("✓ Demo account already exists")
+    except Exception as e:
+        print(f"Note: Could not create demo account: {str(e)}")
+    finally:
+        db.close()
 
 
 # Route registration

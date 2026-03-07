@@ -119,6 +119,16 @@ python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 The API will be available at: `http://localhost:8000`
 
+## Demo Account
+
+A demo account is automatically created when the application starts:
+
+- **Email**: `demo@example.com`
+- **Password**: `demo123`
+- **Username**: `demo`
+
+Use these credentials to test the application without creating a new account.
+
 ## Frontend Setup
 
 The frontend is located in the `frontend/` directory and uses vanilla HTML, CSS, and JavaScript.
