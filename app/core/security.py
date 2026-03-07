@@ -19,12 +19,18 @@ def hash_password(password: str) -> str:
     Hash a plain text password using bcrypt.
     
     Args:
-        password: Plain text password to hash
+        password: Plain text password to hash (max 72 bytes for bcrypt)
         
     Returns:
         Hashed password string
     """
-    return pwd_context.hash(password)
+    # Ensure password doesn't exceed 72 bytes (bcrypt limitation)
+    password_bytes = password.encode('utf-8') if isinstance(password, str) else password
+    if len(password_bytes) > 72:
+        password_bytes = password_bytes[:72]
+    
+    password_str = password_bytes.decode('utf-8', errors='ignore') if isinstance(password_bytes, bytes) else password_bytes
+    return pwd_context.hash(password_str)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -38,7 +44,13 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     Returns:
         True if password matches, False otherwise
     """
-    return pwd_context.verify(plain_password, hashed_password)
+    # Apply same 72-byte truncation as hash_password for consistency
+    password_bytes = plain_password.encode('utf-8') if isinstance(plain_password, str) else plain_password
+    if len(password_bytes) > 72:
+        password_bytes = password_bytes[:72]
+    
+    plain_password_str = password_bytes.decode('utf-8', errors='ignore') if isinstance(password_bytes, bytes) else password_bytes
+    return pwd_context.verify(plain_password_str, hashed_password)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
