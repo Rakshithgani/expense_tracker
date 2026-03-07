@@ -2,8 +2,11 @@
 FastAPI application entry point.
 Main application factory and route registration.
 """
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from app.core.database import init_db, SessionLocal
 from app.core.config import settings
@@ -93,24 +96,37 @@ def health_check():
     return {"status": "healthy"}
 
 
-@app.get("/", tags=["root"])
+# ----- Frontend file serving -----
+_frontend_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
+
+# Serve CSS / JS / other assets at paths that match the HTML references
+# HTML uses  ../styles/  ../scripts/  which resolve to /styles/ and /scripts/
+# when pages are served at /pages/<file>.html
+if os.path.isdir(_frontend_dir):
+    _styles_dir = os.path.join(_frontend_dir, "styles")
+    _scripts_dir = os.path.join(_frontend_dir, "scripts")
+    if os.path.isdir(_styles_dir):
+        app.mount("/styles", StaticFiles(directory=_styles_dir), name="styles")
+    if os.path.isdir(_scripts_dir):
+        app.mount("/scripts", StaticFiles(directory=_scripts_dir), name="scripts")
+
+
+def _serve_page(name: str):
+    """Return a frontend HTML page by filename."""
+    path = os.path.join(_frontend_dir, "pages", name)
+    if os.path.exists(path):
+        return FileResponse(path, media_type="text/html")
+    return {"error": "Page not found"}
+
+
+@app.get("/", include_in_schema=False)
 def root():
-    """
-    Root endpoint with API information.
-    """
-    return {
-        "message": "Welcome to Expense Tracker API",
-        "version": "1.0.0",
-        "docs": "/docs",
-        "openapi": "/openapi.json"
-    }
+    return _serve_page("login.html")
 
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(
-        "app.main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=settings.DEBUG
-    )
+@app.get("/pages/{page_name}", include_in_schema=False)
+def serve_page(page_name: str):
+    # Only allow known html files
+    if not page_name.endswith(".html"):
+        return {"error": "Not found"}
+    return _serve_page(page_name)

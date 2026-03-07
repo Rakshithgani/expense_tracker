@@ -3,7 +3,8 @@
  * Handles user registration, login, and JWT token management
  */
 
-const API_URL = 'http://localhost:8000/api/v1';
+// API on same origin — everything served from one server
+const API_URL = window.location.origin + '/api/v1';
 
 /**
  * Show message to user
