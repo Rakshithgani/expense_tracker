@@ -1,7 +1,7 @@
 """
 Pydantic schemas for User validation and serialization.
 """
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from typing import Optional, List
 
@@ -12,7 +12,12 @@ class UserCreate(BaseModel):
     """
     email: EmailStr
     username: str
-    password: str
+    password: str = Field(
+        ...,
+        min_length=6,
+        max_length=72,
+        description="Password must be between 6-72 characters. Max 72 due to bcrypt limitation."
+    )
     
     class Config:
         from_attributes = True
@@ -23,7 +28,12 @@ class UserLogin(BaseModel):
     Schema for user login request.
     """
     email: EmailStr
-    password: str
+    password: str = Field(
+        ...,
+        min_length=6,
+        max_length=72,
+        description="Password must be between 6-72 characters"
+    )
 
 
 class UserResponse(BaseModel):
