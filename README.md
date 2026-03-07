@@ -4,12 +4,12 @@ A modern web application for tracking and managing personal expenses. Built with
 
 ## Features
 
-- 🔐 **User Authentication** - Secure user registration and login with JWT and bcrypt password hashing
-- 💰 **Expense Management** - Create, read, update, and delete expenses
-- 📊 **Expense Tracking** - Track expenses by category and date
-- 💾 **Database Storage** - SQLAlchemy ORM with SQLite database
-- 🎨 **Responsive UI** - User-friendly web interface with templates
-- ⚙️ **Session Management** - Secure session handling with middleware
+- **User Authentication** - Secure user registration and login with JWT and bcrypt password hashing
+- **Expense Management** - Create, read, update, and delete expenses
+- **Expense Tracking** - Track expenses by category and date
+- **Database Storage** - SQLAlchemy ORM with SQLite database
+- **Responsive UI** - User-friendly web interface with templates
+- **Session Management** - Secure session handling with middleware
 
 ## Tech Stack
 
