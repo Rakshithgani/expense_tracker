@@ -15,8 +15,7 @@ class UserCreate(BaseModel):
     password: str = Field(
         ...,
         min_length=6,
-        max_length=72,
-        description="Password must be between 6-72 characters. Max 72 due to bcrypt limitation."
+        description="Password must be at least 6 characters"
     )
     
     class Config:
@@ -31,8 +30,7 @@ class UserLogin(BaseModel):
     password: str = Field(
         ...,
         min_length=6,
-        max_length=72,
-        description="Password must be between 6-72 characters"
+        description="Password (minimum 6 characters)"
     )
 
 
