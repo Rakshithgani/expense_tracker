@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import init_db, SessionLocal
 from app.core.config import settings
 from app.api.routes import auth_routes, expense_routes
-from app.repositories.user_repository import get_user_by_email
+from app.repositories.user_repository import UserRepository
 from app.services.auth_service import register_user
 
 # Create FastAPI application
@@ -41,7 +41,7 @@ def startup_event():
     db = SessionLocal()
     try:
         demo_email = "demo@example.com"
-        demo_user = get_user_by_email(db, demo_email)
+        demo_user = UserRepository.get_user_by_email(db, demo_email)
         
         if not demo_user:
             # Create demo account
