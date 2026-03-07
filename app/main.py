@@ -9,7 +9,7 @@ from app.core.database import init_db, SessionLocal
 from app.core.config import settings
 from app.api.routes import auth_routes, expense_routes
 from app.repositories.user_repository import UserRepository
-from app.services.auth_service import register_user
+from app.services.auth_service import AuthService
 
 # Create FastAPI application
 app = FastAPI(
@@ -45,7 +45,7 @@ def startup_event():
         
         if not demo_user:
             # Create demo account
-            register_user(
+            AuthService.register_user(
                 db,
                 email=demo_email,
                 username="demo",
