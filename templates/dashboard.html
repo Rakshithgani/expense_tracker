@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseTracker - Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <h1 class="logo">ExpenseTracker</h1>
+        <button id="logout-btn" class="btn btn-outline">Logout</button>
+    </header>
+
+    <main class="dashboard">
+        <h2 class="page-title">Dashboard</h2>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="card card-balance">
+                <span class="card-label">TOTAL BALANCE</span>
+                <span class="card-value" id="total-balance">$0.00</span>
+            </div>
+            <div class="card card-income">
+                <span class="card-label">TOTAL INCOME</span>
+                <span class="card-value green" id="total-income">$0.00</span>
+            </div>
+            <div class="card card-expense">
+                <span class="card-label">TOTAL EXPENSES</span>
+                <span class="card-value red" id="total-expenses">$0.00</span>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Add Expense Form -->
+            <section class="form-section">
+                <h3>Add Expense</h3>
+                <form id="expense-form" autocomplete="off">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" placeholder="e.g., Grocery shopping" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="amount">Amount</label>
+                            <input type="number" id="amount" placeholder="0.00" step="0.01" min="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" required>
+                                <option value="">Select category</option>
+                                <option value="food">Food</option>
+                                <option value="travel">Travel</option>
+                                <option value="utilities">Utilities</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="health">Health</option>
+                                <option value="shopping">Shopping</option>
+                                <option value="salary">Salary</option>
+                                <option value="freelance">Freelance</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="type">Type</label>
+                            <select id="type" required>
+                                <option value="expense">Expense</option>
+                                <option value="income">Income</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="2" placeholder="Optional description"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Add Expense</button>
+                </form>
+            </section>
+
+            <!-- Recent Expenses -->
+            <section class="expenses-section">
+                <h3>Recent Expenses</h3>
+                <div id="expenses-list" class="expenses-list">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
